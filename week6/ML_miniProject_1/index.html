@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Model Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #f5f1ed;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            border: 3px solid #2d2d2d;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #999;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+            color: #1a1a1a;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 5px rgba(26, 26, 26, 0.3);
+            background: #fefdfb;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-predict {
+            background: #2d2d2d;
+            color: #f5f1ed;
+        }
+
+        .btn-predict:hover {
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(26, 26, 26, 0.4);
+        }
+
+        .btn-predict:active {
+            transform: translateY(0);
+        }
+
+        .btn-clear {
+            background: #bfb9b0;
+            color: #1a1a1a;
+        }
+
+        .btn-clear:hover {
+            background: #a9a19a;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .result.success {e8e4df;
+            border: 2px solid #2d2d2d;
+            display: block;
+        }
+
+        .result.error {
+            background: #f5e8e8;
+            border: 2px solid #8b4545;
+            display: block;
+        }
+
+        .result-label {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .prediction-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .result.error .prediction-value {
+            color: #8b4545diction-value {
+            color: #e74c3c;
+            font-size: 16px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f5f1ed;
+            border-top: 3px solid #2d2d2d;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .info-box {
+            background: #e8e4df;
+            border-left: 4px solid #2d2d2d;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 3px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .prediction-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 Pricing Model Predictor</h1>
+        <p class="subtitle">Test your ML pricing model</p>
+
+        <div class="info-box">
+            <strong>ℹ️ Instructions:</strong> Enter feature values below and click "Predict" to get the model's price prediction.
+        </div>
+
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="demand_index">Demand Index:</label>
+                <input type="number" id="demand_index" name="demand_index" step="0.01" placeholder="e.g., 50" required>
+            </div>
+
+            <div class="form-group">
+                <label for="time_slot">Time Slot:</label>
+                <input type="number" id="time_slot" name="time_slot" step="1" placeholder="e.g., 10" required>
+            </div>
+
+            <div class="form-group">
+                <label for="day_of_week">Day of Week:</label>
+                <input type="number" id="day_of_week" name="day_of_week" step="1" placeholder="e.g., 3" required>
+            </div>
+
+            <div class="form-group">
+                <label for="competition_pressure">Competition Pressure:</label>
+                <input type="number" id="competition_pressure" name="competition_pressure" step="0.01" placeholder="e.g., 5.5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="operational_cost">Operational Cost:</label>
+                <input type="number" id="operational_cost" name="operational_cost" step="0.01" placeholder="e.g., 100" required>
+            </div>
+
+            <div class="form-group">
+                <label for="seasonality_index">Seasonality Index:</label>
+                <input type="number" id="seasonality_index" name="seasonality_index" step="0.01" placeholder="e.g., 1.2" required>
+            </div>
+
+            <div class="form-group">
+                <label for="marketing_intensity">Marketing Intensity:</label>
+                <input type="number" id="marketing_intensity" name="marketing_intensity" step="0.01" placeholder="e.g., 75" required>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-predict">Predict</button>
+                <button type="reset" class="btn-clear">Clear</button>
+            </div>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #1a1a1a;">Making prediction...</p>
+        </div>
+
+        <div class="result" id="result">
+            <div class="result-label">Predicted Price:</div>
+            <div class="prediction-value" id="predictionValue">$0.00</div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictionForm');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const predictionValue = document.getElementById('predictionValue');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            try {
+                // Collect form data
+                const data = {
+                    demand_index: parseFloat(document.getElementById('demand_index').value),
+                    time_slot: parseFloat(document.getElementById('time_slot').value),
+                    day_of_week: parseFloat(document.getElementById('day_of_week').value),
+                    competition_pressure: parseFloat(document.getElementById('competition_pressure').value),
+                    operational_cost: parseFloat(document.getElementById('operational_cost').value),
+                    seasonality_index: parseFloat(document.getElementById('seasonality_index').value),
+                    marketing_intensity: parseFloat(document.getElementById('marketing_intensity').value)
+                };
+
+                // Show loading
+                loading.classList.add('active');
+                result.classList.remove('success', 'error');
+                result.style.display = 'none';
+
+                // Make prediction
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                loading.classList.remove('active');
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const responseData = await response.json();
+                const prediction = responseData.prediction;
+
+                // Display result
+                predictionValue.textContent = `$${prediction.toFixed(2)}`;
+                result.classList.add('success');
+                result.style.display = 'block';
+
+            } catch (error) {
+                loading.classList.remove('active');
+                result.classList.add('error');
+                result.style.display = 'block';
+                predictionValue.textContent = `Error: ${error.message}`;
+                console.error('Error:', error);
+            }
+        });
+
+        // Example feature hint
+        form.addEventListener('reset', () => {
+            setTimeout(() => {
+                featuresInput.placeholder = '{"feature1": 10, "feature2": 20}';
+            }, 0);
+        });
+    </script>
+</body>
+</html>
