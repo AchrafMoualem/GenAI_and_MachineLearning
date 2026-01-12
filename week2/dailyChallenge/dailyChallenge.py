@@ -48,19 +48,19 @@ class Farm():
     
 
 
-ainsbaa = Farm("ainsbaa")
-ainsbaa.add_animal("lion")
-ainsbaa.add_animal("monkey")
-ainsbaa.add_animal("lion")
-ainsbaa.add_animal("tiger")
-ainsbaa.add_animal("lion")
-ainsbaa.add_animal("giraffe")
-ainsbaa.add_animal("monkey")
+McDonald = Farm("McDonald")
+McDonald.add_animal("lion")
+McDonald.add_animal("monkey")
+McDonald.add_animal("lion")
+McDonald.add_animal("tiger")
+McDonald.add_animal("lion")
+McDonald.add_animal("giraffe")
+McDonald.add_animal("monkey")
 
-print(ainsbaa.get_info())
-print(ainsbaa.get_short_types())
-print(ainsbaa.get_short_info())
+print(McDonald.get_info())
+print(McDonald.get_short_types())
+print(McDonald.get_short_info())
 
-ainsbaa.add_animals(cow=5, sheep=3, chicken=10)
-print(ainsbaa.get_short_info())
+McDonald.add_animals(cow=5, sheep=3, chicken=10)
+print(McDonald.get_short_info())
 
