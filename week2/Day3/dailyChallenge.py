@@ -1,4 +1,5 @@
 import math
+import turtle
 
 class Circle:
     def __init__(self, radius=None, diameter=None):
@@ -89,3 +90,16 @@ circles.sort(reverse=True)
 print("\nListe triée (du plus grand au plus petit):")
 for c in circles:
     print(f"  {c}")
+
+
+# Draw the sorted circles visually on the screen!
+t = turtle.Turtle()
+t.speed(0)
+t.penup()
+t.goto(-200, 0)  # Start on the left
+for c in circles:
+    t.pendown()
+    t.circle(c.radius * 10)  # Scale the radius for better visibility
+    t.penup()
+    t.forward(50)  # Move to the right for the next circle
+turtle.done()
